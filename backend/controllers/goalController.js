@@ -1,4 +1,3 @@
-const { create } = require('../models/goalModel');
 const GoalModel = require('../models/goalModel')
 
 const getGoals = async (req, res) =>{
