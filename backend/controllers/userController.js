@@ -5,10 +5,16 @@ const bcrypt = require('bcryptjs');
 
 const registerUser = async (req, res) => {
     const {name, email, password} = req.body;
-    if(!name || !email || !password){
-        res.status(400).json({message: 'Please provide all fields'})
-    }
 
+    if(!name || !email || !password){
+        res.status(400).json({
+            message: 'Please provide all fields (name, email, and password)',
+            name: name,
+            email: email,
+            password: password,
+        })
+    }
+    
     try {
         //Check if user exists
         const userExists = await UserModel.findOne({email});
@@ -44,7 +50,27 @@ const registerUser = async (req, res) => {
 }
 
 const loginUser = async (req, res) => {
-    res.status(200).json({message: 'Logging in user!'})
+    const {email, password} = req.body;
+
+    try {
+        const loggedUser = await UserModel.findOne({email});
+
+        //check if the user exists and the password is correct
+        if(loggedUser && (await bcrypt.compare(password, loggedUser.password))){
+            res.status(200).json({
+                message: 'User successfully logged in',
+                _id: loggedUser.id,
+                name: loggedUser.name,
+                email: loggedUser.email
+            })
+        }
+        else{
+            res.status(400).json({message: 'User could not be logged in'})
+        }
+
+    } catch (error) {
+        
+    }
 }
 
 const getUserData = async (req, res) => {
