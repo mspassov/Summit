@@ -38,7 +38,8 @@ const registerUser = async (req, res) => {
                 message: 'User was successfully created!',
                 _id: newUser.id,
                 name: newUser.name,
-                email: newUser.email
+                email: newUser.email,
+                token: generateToken(newUser.id)
             })
         }else{
             res.status(400).json({message: 'Something went wrong, please try again'})
@@ -61,7 +62,8 @@ const loginUser = async (req, res) => {
                 message: 'User successfully logged in',
                 _id: loggedUser.id,
                 name: loggedUser.name,
-                email: loggedUser.email
+                email: loggedUser.email,
+                token: generateToken(loggedUser.id)
             })
         }
         else{
@@ -69,7 +71,10 @@ const loginUser = async (req, res) => {
         }
 
     } catch (error) {
-        
+        res.status(500).json({
+            message: 'Server or Timeout error',
+            error: error
+        })
     }
 }
 
@@ -77,10 +82,12 @@ const getUserData = async (req, res) => {
     res.status(200).json({message: 'User data retrieved'})
 }
 
-
-
-
-
+//generate the JWT
+const generateToken = (id) =>{
+    return jwt.sign({id}, process.env.JWT_SECRET, {
+        expiresIn: '30d'
+    })
+}
 
 module.exports = {
     registerUser,
