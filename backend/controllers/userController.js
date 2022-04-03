@@ -79,7 +79,20 @@ const loginUser = async (req, res) => {
 }
 
 const getUserData = async (req, res) => {
-    res.status(200).json({message: 'User data retrieved'})
+    try {
+        const {_id, name, email} = await UserModel.findById(req.user.id);
+        res.status(200).json({
+            id: _id,
+            name: name,
+            email: email
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            message: 'Server or Timeout error',
+            error: error
+        })
+    }
 }
 
 //generate the JWT
