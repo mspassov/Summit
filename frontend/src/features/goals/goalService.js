@@ -10,7 +10,7 @@ const createGoal = async (goalData, token) =>{
 			}
   }
 
-	const response = await axios.post(API_URL, goalData, token);
+	const response = await axios.post(API_URL, goalData, token, config);
 
 	return response.data;
 }
@@ -29,7 +29,8 @@ const getGoals = async (token) =>{
 }
 
 const goalService = {
-	createGoal
+	createGoal,
+	getGoals
 }
 
 export default goalService;
